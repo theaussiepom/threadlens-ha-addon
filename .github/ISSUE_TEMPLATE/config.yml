@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ThreadLens Core
+    url: https://github.com/theaussiepom/threadlens/issues
+    about: Collector behaviour, API, and report issues
+  - name: ThreadLens HACS integration
+    url: https://github.com/theaussiepom/threadlens-ha-integration/issues
+    about: Dashboard, entities, and HACS packaging issues
