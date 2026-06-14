@@ -1,0 +1,26 @@
+#include <tunables/global>
+
+profile threadlens flags=(attach_disconnected,mediate_deleted) {
+  #include <abstractions/base>
+
+  file,
+  signal (send) set=(kill,term,int,hup,cont),
+
+  /bin/bash rix,
+  /usr/bin/** ix,
+  /bin/** ix,
+  /run/** rwk,
+  /dev/tty rw,
+
+  /data/** rw,
+  /config_generator.py r,
+  /usr/local/bin/threadlens rix,
+  /usr/local/lib/python3.12/** r,
+  /usr/local/lib/** r,
+  /tmp/** rwk,
+  /etc/passwd r,
+  /etc/group r,
+  /etc/hosts r,
+  /etc/nsswitch.conf r,
+  /etc/resolv.conf r,
+}

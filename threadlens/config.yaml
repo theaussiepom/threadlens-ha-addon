@@ -1,0 +1,89 @@
+---
+name: ThreadLens
+version: "0.1.0"
+slug: threadlens
+description: Thread and Matter-over-Thread observability for Home Assistant
+url: https://github.com/theaussiepom/threadlens-ha-addon
+arch:
+  - aarch64
+  - amd64
+startup: services
+boot: auto
+init: false
+host_network: true
+ports:
+  8128/tcp: 8128
+  8129/tcp: 8129
+options:
+  site_name: Home
+  mode: both
+  server:
+    port: 8128
+  agent:
+    port: 8129
+  storage:
+    sqlite_path: /data/threadlens.db
+    event_retention_days: 30
+  mqtt:
+    enabled: true
+    host: core-mosquitto
+    port: 1883
+    username: ""
+    password: ""
+    discovery_prefix: homeassistant
+    topic_prefix: threadlens
+    retain_discovery: true
+    retain_state: true
+    per_trel_service_entities: false
+    per_node_entities: true
+    publish_interval_seconds: 30
+  mdns:
+    enabled: true
+  otbrs: []
+  matter_servers: []
+  reports:
+    redact_secrets: true
+  homeassistant:
+    mqtt_discovery_enabled: true
+schema:
+  site_name: str
+  mode: list(server|agent|both)
+  server:
+    port: port
+  agent:
+    port: port
+  storage:
+    sqlite_path: str
+    event_retention_days: int(1,3650)
+  mqtt:
+    enabled: bool
+    host: str
+    port: port
+    username: str?
+    password: password?
+    discovery_prefix: str
+    topic_prefix: str
+    retain_discovery: bool
+    retain_state: bool
+    per_trel_service_entities: bool
+    per_node_entities: bool
+    publish_interval_seconds: int(5,3600)
+  mdns:
+    enabled: bool
+  otbrs:
+    - id: str
+      name: str
+      rest_url: url
+      agent_url: str?
+  matter_servers:
+    - id: str
+      name: str
+      websocket_url: url
+      variant: list(python|unknown)
+  reports:
+    redact_secrets: bool
+  homeassistant:
+    mqtt_discovery_enabled: bool
+# Build locally from Dockerfile wrapping ghcr.io/theaussiepom/threadlens:0.1.2
+# To use a pre-published wrapper image instead, uncomment:
+# image: ghcr.io/theaussiepom/threadlens-ha-addon:0.1.0

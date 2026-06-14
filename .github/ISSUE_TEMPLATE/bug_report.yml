@@ -1,0 +1,55 @@
+name: Bug report
+description: Report a problem with the ThreadLens Home Assistant OS add-on
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting an add-on packaging issue. Collector/API bugs may belong in [ThreadLens Core](https://github.com/theaussiepom/threadlens/issues).
+  - type: input
+    id: addon_version
+    attributes:
+      label: Add-on version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: core_image
+    attributes:
+      label: ThreadLens Core image tag
+      placeholder: "0.1.2"
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant OS / Supervisor version
+      placeholder: "2026.x"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: Install add-on, configure OTBR URL, start...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant add-on logs
+      description: Redact passwords and tokens before posting.
+      render: shell

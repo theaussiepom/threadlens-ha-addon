@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout ThreadLens Core for schema validation
+        uses: actions/checkout@v4
+        with:
+          repository: theaussiepom/threadlens
+          ref: v0.1.2
+          path: threadlens-core
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: pip install pytest PyYAML pydantic pydantic-settings
+
+      - name: Pytest
+        env:
+          THREADLENS_CORE_PATH: threadlens-core
+        run: pytest tests/ -q
+
+      - name: Shell syntax check
+        run: bash -n threadlens/run.sh
+
+      - name: Shellcheck
+        run: |
+          if command -v shellcheck >/dev/null 2>&1; then
+            shellcheck threadlens/run.sh
+          else
+            echo "shellcheck not installed; skipped"
+          fi
+
+      - name: YAML validation
+        run: |
+          python3 - <<'PY'
+          import yaml
+          from pathlib import Path
+          for path in [Path("repository.yaml"), Path("threadlens/config.yaml")]:
+              data = yaml.safe_load(path.read_text(encoding="utf-8"))
+              assert isinstance(data, dict), path
+              print(f"ok: {path}")
+          PY
+
+      - name: Docker build validation
+        run: |
+          docker build \
+            --build-arg BUILD_VERSION=0.1.2 \
+            -t threadlens-ha-addon-ci:test \
+            threadlens
