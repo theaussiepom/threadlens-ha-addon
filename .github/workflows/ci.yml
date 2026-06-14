@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout ThreadLens Core for schema validation
+        uses: actions/checkout@v4
+        with:
+          repository: theaussiepom/threadlens
+          ref: main
+          path: threadlens-core
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        run: pip install pytest PyYAML pydantic pydantic-settings
+
+      - name: Pytest
+        env:
+          THREADLENS_CORE_PATH: threadlens-core
+        run: pytest tests/ -q
+
+      - name: Shell syntax check
+        run: bash -n threadlens/run.sh
+
+      - name: Shellcheck
+        run: |
+          if command -v shellcheck >/dev/null 2>&1; then
+            shellcheck threadlens/run.sh
+          else
+            echo "shellcheck not installed; skipped"
+          fi
+
+      - name: YAML validation
+        run: |
+          python3 - <<'PY'
+          import yaml
+          from pathlib import Path
+          for path in [Path("repository.yaml"), Path("threadlens/config.yaml")]:
+              data = yaml.safe_load(path.read_text(encoding="utf-8"))
+              assert isinstance(data, dict), path
+              print(f"ok: {path}")
+          PY
+
+      - name: Verify Core 0.2.0 image on GHCR
+        run: |
+          docker manifest inspect ghcr.io/theaussiepom/threadlens:0.2.0
+          docker manifest inspect -v ghcr.io/theaussiepom/threadlens:0.2.0 \
+            | grep -E '"architecture"|"os"' \
+            | grep -E 'amd64|arm64|linux'
+
+      - name: Docker build validation
+        run: |
+          docker build \
+            --build-arg BUILD_VERSION=0.2.0 \
+            -t threadlens-ha-addon-ci:test \
+            threadlens

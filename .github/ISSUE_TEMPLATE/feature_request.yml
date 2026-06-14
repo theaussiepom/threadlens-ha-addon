@@ -1,0 +1,38 @@
+name: Feature request
+description: Suggest an improvement for the ThreadLens Home Assistant OS add-on
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests for collector behaviour belong in [ThreadLens Core](https://github.com/theaussiepom/threadlens/issues).
+        Dashboard/UI requests belong in [threadlens-ha-integration](https://github.com/theaussiepom/threadlens-ha-integration/issues).
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What HAOS install or configuration problem are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      options:
+        - label: Must remain read-only (no Thread/Matter/HA mutation)
+          required: true
+        - label: Must not require Docker socket access
+          required: false
+        - label: Must not require SSH access
+          required: false
