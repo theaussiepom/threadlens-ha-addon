@@ -7,7 +7,7 @@ Files in this directory package ThreadLens Core for Home Assistant OS.
 ```text
 threadlens/
   config.yaml          # Add-on metadata, options, schema
-  Dockerfile           # Thin wrapper around ghcr.io/theaussiepom/threadlens:0.1.2
+  Dockerfile           # Thin wrapper around ghcr.io/theaussiepom/threadlens:0.2.0
   run.sh               # Reads /data/options.json, starts ThreadLens
   config_generator.py  # Maps add-on options → core config.yaml
   apparmor.txt         # AppArmor profile
@@ -29,8 +29,9 @@ No collector logic lives in this repository.
 
 | Artifact | Value |
 |----------|-------|
-| Add-on version (`config.yaml`) | `0.1.0` |
-| Core image (`Dockerfile` `BUILD_VERSION`) | `0.1.2` |
+| Add-on version (`config.yaml`) | `0.2.0` |
+| Core image (`Dockerfile` `BUILD_VERSION`) | `0.2.0` |
+| Ingress | `true` → port `8128` |
 
 ## Publishing
 
@@ -39,7 +40,7 @@ For local development, leave `image:` commented in `config.yaml` so Supervisor b
 To publish a pre-built wrapper image:
 
 ```text
-ghcr.io/theaussiepom/threadlens-ha-addon:0.1.0
+ghcr.io/theaussiepom/threadlens-ha-addon:0.2.0
 ```
 
 Uncomment `image:` in `config.yaml` after publishing.

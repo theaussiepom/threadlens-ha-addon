@@ -32,6 +32,8 @@ ha = options.get("homeassistant") or {}
 
 print("ThreadLens add-on starting")
 print(f"Mode: {mode}")
+print(f"Dashboard: enabled on Core port {server_port}")
+print("Ingress: enabled")
 print(f"Server port: {server_port}")
 print(f"Agent port: {agent_port}")
 print(f"Configured OTBRs: {len(otbrs)}")

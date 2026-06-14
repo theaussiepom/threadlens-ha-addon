@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-CORE_IMAGE_TAG = "0.1.2"
+CORE_IMAGE_TAG = "0.2.0"
 
 DEFAULT_MDNS_SERVICES = [
     "_trel._udp.local.",

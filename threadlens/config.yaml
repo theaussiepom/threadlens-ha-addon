@@ -1,6 +1,6 @@
 ---
 name: ThreadLens
-version: "0.1.0"
+version: "0.2.0"
 slug: threadlens
 description: Thread and Matter-over-Thread observability for Home Assistant
 url: https://github.com/theaussiepom/threadlens-ha-addon
@@ -10,6 +10,10 @@ arch:
 startup: services
 boot: auto
 init: false
+ingress: true
+ingress_port: 8128
+panel_icon: mdi:access-point-network
+panel_title: ThreadLens
 host_network: true
 ports:
   8128/tcp: 8128
@@ -84,6 +88,7 @@ schema:
     redact_secrets: bool
   homeassistant:
     mqtt_discovery_enabled: bool
-# Build locally from Dockerfile wrapping ghcr.io/theaussiepom/threadlens:0.1.2
+# Build locally from Dockerfile wrapping ghcr.io/theaussiepom/threadlens:0.2.0
+# Requires Core 0.2.0 (dashboard UI + Ingress-capable static serving). See add-on CHANGELOG.
 # To use a pre-published wrapper image instead, uncomment:
-# image: ghcr.io/theaussiepom/threadlens-ha-addon:0.1.0
+# image: ghcr.io/theaussiepom/threadlens-ha-addon:0.2.0

@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: theaussiepom/threadlens
-          ref: v0.1.2
+          ref: main
           path: threadlens-core
 
       - uses: actions/setup-python@v5
@@ -56,6 +56,6 @@ jobs:
       - name: Docker build validation
         run: |
           docker build \
-            --build-arg BUILD_VERSION=0.1.2 \
+            --build-arg BUILD_VERSION=0.2.0 \
             -t threadlens-ha-addon-ci:test \
             threadlens

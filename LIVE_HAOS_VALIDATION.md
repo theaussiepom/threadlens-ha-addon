@@ -1,14 +1,24 @@
 # Live Home Assistant OS Validation Checklist
 
-This checklist is for **manual validation on a real Home Assistant OS instance**. Complete it before tagging add-on release `v0.1.0`.
+This checklist is for **manual validation on a real Home Assistant OS instance**. Complete it before tagging add-on release `v0.2.0`.
+
+## Prerequisites
+
+| Dependency | Status |
+|------------|--------|
+| Core PR #6 merged | ☐ |
+| Core `0.2.0` published to GHCR | ☐ |
+| Add-on branch `feat/ingress-core-dashboard` (or merged main) | ☐ |
+
+**Do not treat production-ready until Core `ghcr.io/theaussiepom/threadlens:0.2.0` is published.**
 
 ## Versions under test
 
 | Component | Expected |
 |-----------|----------|
-| Add-on version | `0.1.0` |
-| Core image | `ghcr.io/theaussiepom/threadlens:0.1.2` |
-| HACS integration | latest from `threadlens-ha-integration` |
+| Add-on version | `0.2.0` |
+| Core image | `ghcr.io/theaussiepom/threadlens:0.2.0` |
+| HACS integration (optional) | latest from `threadlens-ha-integration` |
 
 ## 1. Add the add-on repository
 
@@ -42,6 +52,8 @@ https://github.com/theaussiepom/threadlens-ha-addon
 ```text
 ThreadLens add-on starting
 Mode: both
+Dashboard: enabled on Core port 8128
+Ingress: enabled
 Server port: 8128
 Agent port: 8129
 Configured OTBRs: 0
@@ -54,21 +66,44 @@ mDNS enabled: true
 - [ ] Add-on reaches **Running**
 - [ ] No passwords or tokens in logs
 
-### API smoke test
+## 3. Ingress dashboard
+
+1. Open **Settings → Add-ons → ThreadLens**
+2. Confirm **Open Web UI** (or equivalent Ingress launch) is available
+3. Click to open the dashboard
+
+- [ ] Dashboard opens through Ingress
+- [ ] Page title shows ThreadLens Dashboard
+- [ ] CSS/JS assets load (no blank page)
+- [ ] Header shows API connected / version
+- [ ] Incident summary and sections render (may be sparse with empty config)
+
+### Dashboard API through Ingress
+
+Open browser developer tools on the Ingress dashboard page:
+
+- [ ] Network request to relative `api/v1/dashboard` succeeds (200 JSON)
+- [ ] No `hass.callWS` or Home Assistant websocket errors in console
+- [ ] Report YAML link opens in a new tab and returns YAML text
+
+## 4. LAN API smoke test
 
 Replace `<ha-host>` with your Home Assistant hostname or IP.
 
 ```bash
 curl http://<ha-host>:8128/api/v1/health
+curl http://<ha-host>:8128/api/v1/dashboard
 curl http://<ha-host>:8128/api/v1/status
 curl http://<ha-host>:8128/api/v1/report.yaml
 ```
 
 - [ ] `/api/v1/health` returns JSON
+- [ ] `/api/v1/dashboard` returns JSON with `threadlens` section
 - [ ] `/api/v1/status` returns JSON
 - [ ] `/api/v1/report.yaml` returns YAML
+- [ ] `GET /` on LAN returns dashboard HTML (Core static UI)
 
-## 3. Configure your environment
+## 5. Configure your environment
 
 Fill in your LAN values locally (do not commit these):
 
@@ -80,7 +115,7 @@ Fill in your LAN values locally (do not commit these):
 | MQTT broker host | `core-mosquitto` or `____________` |
 | MQTT username | `____________` |
 | MQTT password | `____________` (keep private) |
-| ThreadLens API URL for HACS | `http://<ha-host>:8128` |
+| ThreadLens LAN API URL | `http://<ha-host>:8128` |
 
 Example configuration shape:
 
@@ -112,26 +147,29 @@ homeassistant:
 - [ ] Configuration saved
 - [ ] Add-on restarted cleanly
 
-## 4. Expected collector results
+## 6. Expected collector results
 
-After one or two poll cycles:
+After one or two poll cycles, re-open the Ingress dashboard:
 
-- [ ] OTBRs appear in `/api/v1/status`
+- [ ] OTBRs appear in dashboard and `/api/v1/status`
 - [ ] Matter nodes populate when Matter Server is reachable
-- [ ] mDNS/TREL counts populate if host networking permits multicast
+- [ ] mDNS/TREL counts populate with host networking enabled
 - [ ] MQTT connects when broker credentials are correct
 - [ ] MQTT Discovery entities appear (optional baseline path)
+- [ ] Matter node health section shows grouped nodes when data exists
 
 ### Expected warnings (informational)
 
 These may appear without indicating an add-on fault:
 
-- `otbr_rest_endpoint_mismatch`
-- `foreign_trel_services_observed`
+- `otbr_rest_endpoint_mismatch` (reconciled mismatch should not look scary in dashboard)
+- `foreign_trel_services_observed` (informational in dashboard)
 
 - [ ] Warnings understood and documented if present
 
-## 5. HACS integration follow-up
+## 7. HACS integration (optional)
+
+The HACS integration is **not required** for the Ingress dashboard. Optional follow-up:
 
 1. Install **ThreadLens** from HACS (`threadlens-ha-integration`)
 2. Configure integration URL:
@@ -141,31 +179,34 @@ These may appear without indicating an add-on fault:
    ```
 
 3. Restart Home Assistant if prompted
-4. Hard-refresh the ThreadLens sidebar panel
 
-- [ ] Integration connects
-- [ ] Sidebar dashboard loads
-- [ ] Matter node health section populates
+- [ ] Integration connects to LAN API
+- [ ] HACS sidebar dashboard still works (parallel path during migration)
+- [ ] Ingress dashboard remains the canonical Core UI
 
-## 6. Read-only safety check
+## 8. Read-only safety check
 
 Confirm the add-on does **not**:
 
 - [ ] Require Docker socket access
 - [ ] Require SSH access
 - [ ] Mutate OTBR, Matter, Thread, or HA state
+- [ ] Duplicate Core dashboard assets in the add-on image
 
-## 7. Sign-off
+## 9. Sign-off
 
 | Check | Pass |
 |-------|------|
 | Add-on install | ☐ |
-| API health/status/report | ☐ |
+| Ingress dashboard opens | ☐ |
+| Dashboard API via Ingress | ☐ |
+| Report YAML via Ingress | ☐ |
+| LAN API health/dashboard/report | ☐ |
 | OTBR collection | ☐ |
 | Matter collection | ☐ |
-| mDNS/TREL (if expected) | ☐ |
+| mDNS/TREL (host networking) | ☐ |
 | MQTT (if enabled) | ☐ |
-| HACS dashboard | ☐ |
+| HACS integration (optional) | ☐ |
 | No secrets in logs | ☐ |
 
 **Validator:** ________________  
@@ -173,4 +214,4 @@ Confirm the add-on does **not**:
 **HAOS version:** ________________  
 **Add-on branch/commit:** ________________
 
-When all checks pass, tag add-on release `v0.1.0`.
+When all checks pass and Core `0.2.0` is published, tag add-on release `v0.2.0`.

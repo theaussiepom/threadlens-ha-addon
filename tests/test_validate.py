@@ -15,8 +15,8 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[1]
 ADDON_DIR = REPO_ROOT / "threadlens"
 GENERATOR_PATH = ADDON_DIR / "config_generator.py"
-CORE_IMAGE_TAG = "0.1.2"
-ADDON_VERSION = "0.1.0"
+CORE_IMAGE_TAG = "0.2.0"
+ADDON_VERSION = "0.2.0"
 
 REQUIRED_ADDON_FILES = [
     "config.yaml",
@@ -106,6 +106,10 @@ def test_addon_config_has_required_metadata() -> None:
     assert config["boot"] == "auto"
     assert config["init"] is False
     assert config["host_network"] is True
+    assert config["ingress"] is True
+    assert config["ingress_port"] == 8128
+    assert config["panel_icon"] == "mdi:access-point-network"
+    assert config["panel_title"] == "ThreadLens"
     assert set(config["arch"]) >= {"aarch64", "amd64"}
     assert "armv7" not in config["arch"]
     assert config["options"]["mode"] == "both"
@@ -288,6 +292,23 @@ def test_generated_config_validates_against_core_schema(tmp_path: Path) -> None:
     )
     assert loaded.mode.value == "both"
     assert loaded.mqtt.host == "core-mosquitto"
+
+
+def test_docs_mention_ingress_dashboard() -> None:
+    readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    docs = (ADDON_DIR / "DOCS.md").read_text(encoding="utf-8")
+    live = (REPO_ROOT / "LIVE_HAOS_VALIDATION.md").read_text(encoding="utf-8")
+    for text in (readme, docs, live):
+        assert "Ingress" in text
+        assert "Open Web UI" in text or "ingress" in text.lower()
+    assert "0.2.0" in readme
+    assert "api/v1/dashboard" in docs
+
+
+def test_run_sh_mentions_ingress_startup() -> None:
+    content = (ADDON_DIR / "run.sh").read_text(encoding="utf-8")
+    assert "Ingress: enabled" in content
+    assert "Dashboard: enabled on Core port" in content
 
 
 def test_no_private_values_committed() -> None:
