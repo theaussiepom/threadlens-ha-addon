@@ -4,24 +4,25 @@ Version target: **add-on `0.2.0`** running **Core `0.2.0`** with **Ingress dashb
 
 ## Prerequisites (blocking)
 
-- [ ] [Core PR #6](https://github.com/theaussiepom/threadlens/pull/6) merged to Core `main`
-- [ ] Core `v0.2.0` tagged and published: `ghcr.io/theaussiepom/threadlens:0.2.0`
-- [ ] Core image pull succeeds on HAOS target architecture (amd64 / aarch64)
+- [x] Core `v0.2.0` (React dashboard) merged to Core `main` and published: `ghcr.io/theaussiepom/threadlens:0.2.0`
+- [x] Core image available for `linux/amd64` and `linux/arm64` (verified via GHCR manifest)
+- [ ] Core image pull succeeds on HAOS target architecture (amd64 / aarch64) — verify during live HAOS test
+- [ ] [LIVE_HAOS_VALIDATION.md](LIVE_HAOS_VALIDATION.md) completed on a real HAOS host (Ingress + LAN API)
 
-**Do not merge or tag this add-on for production until Core `0.2.0` is on GHCR.**
+**Do not tag add-on `v0.2.0` until live HAOS Ingress validation passes.** Merging PR #2 without a release is acceptable if docs clearly mark validation as pending.
 
 ## Pre-release
 
-- [ ] Core image available: `ghcr.io/theaussiepom/threadlens:0.2.0`
-- [ ] `pytest tests/ -q` passes in this repo
-- [ ] `bash -n threadlens/run.sh` passes
-- [ ] Add-on `version` is `0.2.0` in `threadlens/config.yaml`
-- [ ] Dockerfile `BUILD_VERSION` is `0.2.0`
-- [ ] `ingress: true`, `ingress_port: 8128`, `panel_icon`, `panel_title` configured
-- [ ] `host_network: true` remains configured
-- [ ] LAN ports `8128`/`8129` remain mapped
-- [ ] Default `otbrs` and `matter_servers` are empty
-- [ ] Secret/public-safety audit passes (`tests/test_validate.py`)
+- [x] Core image available: `ghcr.io/theaussiepom/threadlens:0.2.0`
+- [x] `pytest tests/ -q` passes in this repo
+- [x] `bash -n threadlens/run.sh` passes
+- [x] Add-on `version` is `0.2.0` in `threadlens/config.yaml`
+- [x] Dockerfile `BUILD_VERSION` is `0.2.0`
+- [x] `ingress: true`, `ingress_port: 8128`, `panel_icon`, `panel_title` configured
+- [x] `host_network: true` remains configured
+- [x] LAN ports `8128`/`8129` remain mapped
+- [x] Default `otbrs` and `matter_servers` are empty
+- [x] Secret/public-safety audit passes (`tests/test_validate.py`)
 - [ ] [LIVE_HAOS_VALIDATION.md](LIVE_HAOS_VALIDATION.md) completed on a real HAOS host (Ingress + LAN API)
 
 ## Publish add-on wrapper image (optional)
@@ -63,7 +64,7 @@ docker push ghcr.io/theaussiepom/threadlens-ha-addon:0.2.0
 
 ## Tagging
 
-Do **not** tag `v0.2.0` until Core `0.2.0` is published and live HAOS Ingress validation passes.
+Do **not** tag `v0.2.0` until live HAOS Ingress validation passes. Core `0.2.0` is already published; the remaining gate is completing [LIVE_HAOS_VALIDATION.md](LIVE_HAOS_VALIDATION.md) on a real HAOS host.
 
 ## Branch protection
 

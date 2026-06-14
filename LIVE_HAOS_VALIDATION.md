@@ -2,15 +2,28 @@
 
 This checklist is for **manual validation on a real Home Assistant OS instance**. Complete it before tagging add-on release `v0.2.0`.
 
+## Current status (Phase 7A — deferred)
+
+| Check | Status |
+|-------|--------|
+| Core `0.2.0` published on GHCR | ✅ Done |
+| Add-on PR #2 structurally aligned with Core `0.2.0` | ✅ Done (static/repo validation) |
+| Core image pin verified (`linux/amd64`, `linux/arm64`) | ✅ Done |
+| Add-on tests and CI green | ✅ Done |
+| **Live HAOS Ingress validation** | ⏳ **Pending** — no HAOS test instance available yet |
+
+**Do not tag or release add-on `v0.2.0` until this checklist is completed on a real HAOS host.**
+
+Repository and CI validation do **not** prove Ingress dashboard behaviour. Treat Ingress as unvalidated until the checks below pass.
+
 ## Prerequisites
 
 | Dependency | Status |
 |------------|--------|
-| Core PR #6 merged | ☐ |
-| Core `0.2.0` published to GHCR | ☐ |
-| Add-on branch `feat/ingress-core-dashboard` (or merged main) | ☐ |
-
-**Do not treat production-ready until Core `ghcr.io/theaussiepom/threadlens:0.2.0` is published.**
+| Core `v0.2.0` (React dashboard) merged and published | ✅ |
+| Core image `ghcr.io/theaussiepom/threadlens:0.2.0` on GHCR | ✅ |
+| Add-on branch `feat/ingress-core-dashboard` (or merged main) | ☐ install from branch or merged main |
+| Real Home Assistant OS test host | ☐ required before release |
 
 ## Versions under test
 
@@ -214,4 +227,4 @@ Confirm the add-on does **not**:
 **HAOS version:** ________________  
 **Add-on branch/commit:** ________________
 
-When all checks pass and Core `0.2.0` is published, tag add-on release `v0.2.0`.
+When all checks pass on a real HAOS host, tag add-on release `v0.2.0`. Core `0.2.0` is already published; live HAOS Ingress validation is the remaining gate.

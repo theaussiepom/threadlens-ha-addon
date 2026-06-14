@@ -305,6 +305,16 @@ def test_docs_mention_ingress_dashboard() -> None:
     assert "api/v1/dashboard" in docs
 
 
+def test_docs_state_haos_live_validation_pending() -> None:
+    readme = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+    live = (REPO_ROOT / "LIVE_HAOS_VALIDATION.md").read_text(encoding="utf-8")
+    release = (REPO_ROOT / "RELEASE.md").read_text(encoding="utf-8")
+    for text in (readme, live, release):
+        lowered = text.lower()
+        assert "pending" in lowered or "deferred" in lowered
+    assert "do not tag" in readme.lower() or "do **not** tag" in readme.lower()
+
+
 def test_run_sh_mentions_ingress_startup() -> None:
     content = (ADDON_DIR / "run.sh").read_text(encoding="utf-8")
     assert "Ingress: enabled" in content

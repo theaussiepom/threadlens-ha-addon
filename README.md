@@ -51,7 +51,19 @@ Container/power users can continue running ThreadLens Core directly with Docker/
 | Add-on | `0.2.0` |
 | ThreadLens Core image | `ghcr.io/theaussiepom/threadlens:0.2.0` |
 
-**Dependency:** Core `0.2.0` must be published on GHCR before this add-on can run in production. The add-on pins that image tag; it does not bundle dashboard assets.
+**Dependency:** Core `0.2.0` is published on GHCR (`ghcr.io/theaussiepom/threadlens:0.2.0`). The add-on pins that image tag; it does not bundle dashboard assets.
+
+## Architecture
+
+| Path | Role |
+|------|------|
+| **ThreadLens Core** | Owns the canonical full React/mobile dashboard (`/`, `GET /api/v1/dashboard`) |
+| **HAOS add-on (Ingress)** | Thin wrapper that exposes the Core dashboard through Home Assistant Ingress — the embedded full-dashboard path for HAOS users |
+| **Docker / Compose** | Run Core directly from the [Core repository](https://github.com/theaussiepom/threadlens) — no add-on required |
+| **HACS integration** | Optional companion for HA entities; a native status panel is planned later — **not** the iframe-first embedded dashboard path |
+| **Reverse proxy** | Optional for advanced setups; not required for Ingress or LAN API |
+
+The add-on does **not** duplicate Core dashboard assets.
 
 ## Default runtime
 
@@ -138,7 +150,11 @@ Reports redact secrets via Core `reports.redact_secrets` but still include opera
 
 ## Status
 
-Early / pre-1.0. Validate on your HAOS instance using [LIVE_HAOS_VALIDATION.md](LIVE_HAOS_VALIDATION.md) before production use.
+Early / pre-1.0. PR #2 (`feat/ingress-core-dashboard`) is structurally aligned with published Core `0.2.0` and passes repository tests and CI.
+
+**Live HAOS Ingress validation is still pending.** A HAOS test instance is not available yet, so Ingress dashboard behaviour has not been verified on real Home Assistant OS. Do **not** tag or release add-on `v0.2.0` until [LIVE_HAOS_VALIDATION.md](LIVE_HAOS_VALIDATION.md) is completed on a real HAOS host.
+
+For container users today, run ThreadLens Core directly with Docker/Compose from the Core repository.
 
 ## Development / validation
 

@@ -53,13 +53,12 @@ jobs:
               print(f"ok: {path}")
           PY
 
-      - name: Bootstrap Core image for add-on build
+      - name: Verify Core 0.2.0 image on GHCR
         run: |
-          # Core 0.2.0 may not be published on GHCR yet; build from checkout so CI
-          # can validate the add-on wrapper Dockerfile without faking availability.
-          docker build \
-            -t ghcr.io/theaussiepom/threadlens:0.2.0 \
-            threadlens-core
+          docker manifest inspect ghcr.io/theaussiepom/threadlens:0.2.0
+          docker manifest inspect -v ghcr.io/theaussiepom/threadlens:0.2.0 \
+            | grep -E '"architecture"|"os"' \
+            | grep -E 'amd64|arm64|linux'
 
       - name: Docker build validation
         run: |
