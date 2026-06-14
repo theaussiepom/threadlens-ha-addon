@@ -15,7 +15,7 @@ RUN chmod a+x /run.sh
 LABEL \
   io.hass.version="0.1.0" \
   io.hass.type="addon" \
-  io.hass.arch="aarch64|amd64|armv7"
+  io.hass.arch="aarch64|amd64"
 
 USER threadlens
 

@@ -106,7 +106,8 @@ def test_addon_config_has_required_metadata() -> None:
     assert config["boot"] == "auto"
     assert config["init"] is False
     assert config["host_network"] is True
-    assert set(config["arch"]) >= {"aarch64", "amd64", "armv7"}
+    assert set(config["arch"]) >= {"aarch64", "amd64"}
+    assert "armv7" not in config["arch"]
     assert config["options"]["mode"] == "both"
     assert config["options"]["otbrs"] == []
     assert config["options"]["matter_servers"] == []

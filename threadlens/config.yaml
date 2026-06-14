@@ -7,7 +7,6 @@ url: https://github.com/theaussiepom/threadlens-ha-addon
 arch:
   - aarch64
   - amd64
-  - armv7
 startup: services
 boot: auto
 init: false
